@@ -1,4 +1,4 @@
-package com.example.AddressBookApp.security;
+package com.example.AddressBookApp.utility;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

@@ -2,8 +2,10 @@ package com.example.AddressBookApp.controller;
 
 import com.example.AddressBookApp.dto.LoginDTO;
 import com.example.AddressBookApp.dto.UserDTO;
+import com.example.AddressBookApp.service.RabbitMQProducer;
 import com.example.AddressBookApp.service.UserService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -17,6 +19,9 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    @Autowired
+    RabbitMQProducer rabbitMQProducer;
+
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -103,4 +108,11 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Password reset failed: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/send")
+    public String sendTestMessage(@RequestParam String to, @RequestParam String subject, @RequestParam String message) {
+        rabbitMQProducer.sendEmailNotification(to, subject, message);
+        return "Email request sent to RabbitMQ!";
+    }
+
 }
